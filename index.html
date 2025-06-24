@@ -13,12 +13,12 @@
         <form id="entryForm">
             <div class="form-group">
                 <label for="email">כתובת מייל:</label>
-                <input type="email" id="email" name="כתובת מייל" required>
+                <input type="email" id="email" name="Email Address" required>
             </div>
 
             <div class="form-group">
                 <label for="idNumber">תעודת זהות:</label>
-                <input type="tel" id="idNumber" name="מספר אישי/תעודת זהות" required pattern="[0-9]{9}" title="אנא הזן 9 ספרות">
+                <input type="tel" id="idNumber" name="תעודת זהות" required pattern="[0-9]{9}" title="אנא הזן 9 ספרות">
             </div>
 
             <div class="form-group">
@@ -96,7 +96,7 @@
             });
 
             // הכתובת הזו תוחלף בכתובת ה-Web App שלך מהשלב הבא!
-            const webAppUrl = 'https://script.google.com/macros/s/AKfycbw6F3AkPc4_J4hrc80ZJKiPorOwFzw76ua5cLyTeDrwfdtqK9patdJ7pHJSirfwO3Qz'; // *** חשוב: לשנות את זה! ***
+            const webAppUrl = 'https://script.google.com/macros/s/AKfycbw6F3AkPc4_J4hrc80ZJKiPorOwFzw76ua5cLyTeDrwfdtqK9patdJ7pHJSirfwO3Qz/exec'; // *** חשוב: לשנות את זה! ***
 
             try {
                 const response = await fetch(webAppUrl, {
