@@ -1,0 +1,208 @@
+body {
+    direction: rtl; /* כיווניות מימין לשמאל */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* פונט מודרני יותר */
+    background-image: url('imbr.jpg'); /* *** שינה כאן לשם הקובץ שלך! *** */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /*background-attachment: fixed;*/
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.95); /* רקע לבן עם שקיפות קלה */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+/* עיצוב הלוגו */
+.logo {
+    max-width: 180px;
+    height: auto;
+    margin-bottom: 25px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    color: #333333;
+    margin-bottom: 10px;
+    font-size: 2.2em;
+    font-weight: 600;
+}
+
+p {
+    color: #666666;
+    margin-bottom: 35px;
+    font-size: 1.05em;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    text-align: right;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #444444;
+    font-weight: 500;
+    font-size: 0.95em;
+}
+
+/* סגנונות לשדות טקסט/מייל/טלפון */
+input[type="text"],
+input[type="email"],
+input[type="tel"] { /* הסרנו את select מכאן */
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1.1em;
+    box-sizing: border-box;
+    background-color: #f8f8f8;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus { /* הסרנו את select מכאן */
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+    background-color: #ffffff;
+}
+
+/* עיצוב פלייסוהלדרים */
+input::placeholder {
+    color: #aaaaaa;
+    font-size: 0.9em;
+}
+
+/* סגנונות לקבוצת כפתורי הרדיו */
+.radio-group {
+    display: flex;
+    flex-direction: column; /* הצגה אחד מתחת לשני */
+    align-items: flex-end; /* יישור לימין (לכיווניות RTL) */
+    gap: 12px; /* מרווח בין האפשרויות */
+    padding: 10px 0;
+    border: 1px solid #e0e0e0; /* מסגרת לשדות הבחירה */
+    border-radius: 8px;
+    background-color: #f8f8f8;
+}
+
+.radio-group input[type="radio"] {
+    /* הסתר את כפתור הרדיו המקורי */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px; /* גודל הריבוע של הכפתור המותאם אישית */
+    height: 20px;
+    border: 2px solid #bbb;
+    border-radius: 50%; /* צורה עגולה */
+    outline: none;
+    cursor: pointer;
+    margin-left: 10px; /* מרווח בין הריבוע לטקסט */
+    flex-shrink: 0; /* מונע מהכפתור להתכווץ */
+    position: relative;
+    top: 5px; /* יישור אנכי עם הטקסט */
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+}
+
+.radio-group input[type="radio"]:checked {
+    border-color: #007bff; /* צבע הגבול כשהוא נבחר */
+    background-color: #007bff; /* צבע מילוי כשהוא נבחר */
+}
+
+.radio-group input[type="radio"]:checked::before {
+    content: '';
+    display: block;
+    width: 10px; /* גודל הנקודה הפנימית */
+    height: 10px;
+    background: white; /* צבע הנקודה הפנימית */
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.radio-group label {
+    display: inline-block; /* כדי שהטקסט והכפתור יהיו באותה שורה */
+    margin-bottom: 0; /* לבטל מרווח תחתון בתוויות של רדיו */
+    cursor: pointer;
+    color: #333333;
+    font-weight: normal; /* לבטל בולד על תוויות רדיו */
+    font-size: 1.05em;
+    padding-right: 5px; /* מרווח מהכפתור */
+}
+
+.radio-group div {
+    display: flex;
+    align-items: center;
+    width: 100%;
+   /* justify-content: flex-end;  יישור לסוף */
+}
+
+
+.submit-button {
+    background-color: #007bff;
+    color: white;
+    padding: 18px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.message {
+    margin-top: 30px;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    display: none;
+}
+
+.message.sending {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    display: block;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block;
+}

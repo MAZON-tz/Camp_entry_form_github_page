@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>טופס כניסה למרכז</title>
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+    <div class="container">
+        <img src="images.jpg" alt="לוגו המרכז" class="logo"> <h1>טופס בקשת כניסה לבסיס הספקת מזון מרכז צריפין</h1>
+        <p>נא למלא את הפרטים הבאים כדי לאשר את כניסתך.</p>
+
+        <form id="entryForm">
+            <div class="form-group">
+                <label for="email">כתובת מייל:</label>
+                <input type="email" id="email" name="כתובת מייל" required>
+            </div>
+
+            <div class="form-group">
+                <label for="idNumber">תעודת זהות:</label>
+                <input type="text" id="idNumber" name="מספר אישי/תעודת זהות" required pattern="[0-9]{9}" title="אנא הזן 9 ספרות">
+            </div>
+
+            <div class="form-group">
+                <label for="firstName">שם פרטי:</label>
+                <input type="text" id="firstName" name="שם פרטי" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">שם משפחה:</label>
+                <input type="text" id="lastName" name="שם משפחה" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">טלפון נייד:</label>
+                <input type="tel" id="phone" name="טלפון נייד" required pattern="[0-9]{10}" title="אנא הזן 10 ספרות (לדוגמה: 0501234567)">
+            </div>
+
+             <div class="form-group">
+                <label>שייכות:</label>
+                <div class="radio-group">
+                    <!-- כל אפשרות רדיו עטופה ב-div נפרד עבור שליטה טובה יותר בפריסה -->
+                    <div>
+                        <input type="radio" id="affiliation1" name="שייכות" value="בהס מזון מרכז" required>
+                        <label for="affiliation1">בה"ס מזון מרכז (חייל, קבע, מילואים, אע"צ)</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="affiliation2" name="שייכות" value="שולחן מרכזי" required>
+                        <label for="affiliation2">שולחן מרכזי</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="affiliation2" name="שייכות" value="משרת צהל" required>
+                        <label for="affiliation2">משרת צה"ל</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="affiliation3" name="שייכות" value="אזרח / נהג אזרחי / ספק אזרחי" required>
+                        <label for="affiliation3">אזרח / נהג אזרחי / ספק אזרחי</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="affiliation2" name="שייכות" value="אזרח עובד מטבח בסיס הפסקת מזון" required>
+                        <label for="affiliation2">אזרח עובד מטבח בסיס הפסקת מזון</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="affiliation2" name="שייכות" value="חרסית" required>
+                        <label for="affiliation2">חרסית</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-button">שלח בקשת כניסה</button>
+
+            <div id="responseMessage" class="message"></div>
+        </form>
+    </div>
+
+    <script>
+        // זהו קטע JavaScript שיטפל בשליחת הטופס
+        const form = document.getElementById('entryForm');
+        const responseMessage = document.getElementById('responseMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // מונע את שליחת הטופס בדרך הרגילה
+
+            responseMessage.textContent = 'שולח...';
+            responseMessage.className = 'message sending';
+
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // הכתובת הזו תוחלף בכתובת ה-Web App שלך מהשלב הבא!
+            const webAppUrl = 'https://script.google.com/macros/s/AKfycbw6F3AkPc4_J4hrc80ZJKiPorOwFzw76ua5cLyTeDrwfdtqK9patdJ7pHJSirfwO3Qz/exec'; // *** חשוב: לשנות את זה! ***
+
+            try {
+                const response = await fetch(webAppUrl, {
+                    method: 'POST',
+                    mode: 'no-cors', // שימו לב ל-no-cors - נדרש עבור Apps Script Web Apps פשוטים
+                    headers: {
+                        'Content-Type': 'application/json', // או application/x-www-form-urlencoded
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                // בגלל 'no-cors', לא נוכל לקרוא את התגובה ישירות
+                // נניח שהשליחה הצליחה אם לא הייתה שגיאת רשת
+                responseMessage.textContent = 'הפרטים נשלחו בהצלחה! המספר המזהה שלך נשלח למייל.';
+                responseMessage.className = 'message success';
+                form.reset(); // איפוס הטופס
+            } catch (error) {
+                console.error('Error:', error);
+                responseMessage.textContent = 'אירעה שגיאה בשליחת הפרטים. אנא נסה שוב.';
+                responseMessage.className = 'message error';
+            }
+        });
+    </script>
+</body>
+</html>
