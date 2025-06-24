@@ -1,7 +1,7 @@
 body {
     direction: rtl; /* כיווניות מימין לשמאל */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* פונט מודרני יותר */
-    background-image: url('imbr.JPG'); /* *** שינה כאן לשם הקובץ שלך! *** */
+    background-image: url('imbr.jpg'); /* *** שינה כאן לשם הקובץ שלך! *** */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
