@@ -11,7 +11,7 @@
         <p>נא למלא את הפרטים הבאים כדי לאשר את כניסתך.</p>
 
         <form id="entryForm">
-            <div class="form-group">
+<!--            <div class="form-group">
                 <label for="email">כתובת מייל:</label>
                 <input type="email" id="email" name="Email Address" required>
             </div>
@@ -19,7 +19,7 @@
             <div class="form-group">
                 <label for="idNumber">תעודת זהות:</label>
                 <input type="tel" id="idNumber" name="תעודת זהות" required pattern="[0-9]{9}" title="אנא הזן 9 ספרות">
-            </div>
+            </div>-->
 
             <div class="form-group">
                 <label for="firstName">שם פרטי:</label>
@@ -110,7 +110,8 @@
 
                 // בגלל 'no-cors', לא נוכל לקרוא את התגובה ישירות
                 // נניח שהשליחה הצליחה אם לא הייתה שגיאת רשת
-                responseMessage.textContent = 'הפרטים נשלחו בהצלחה! המספר המזהה שלך נשלח למייל.';
+                //responseMessage.textContent = 'הפרטים נשלחו בהצלחה! המספר המזהה שלך נשלח למייל.';
+		responseMessage.textContent = 'הפרטים נשלחו בהצלחה!';
                 responseMessage.className = 'message success';
                 form.reset(); // איפוס הטופס
             } catch (error) {
