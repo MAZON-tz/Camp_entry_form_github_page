@@ -206,3 +206,10 @@ input::placeholder {
     border: 1px solid #f5c6cb;
     display: block;
 }
+
+.login-link-container{
+    text-align: center;
+    font-weight: 500;
+    font-size: 0.65em;
+    padding: 40px;
+}

@@ -6,76 +6,81 @@
     <title>טופס כניסה למרכז</title>
     <link rel="stylesheet" href="style.css"> </head>
 <body>
-    <div class="container">
-        <img src="images.jpg" alt="לוגו המרכז" class="logo"> <h1>טופס בקשת כניסה לבסיס הספקת מזון מרכז צריפין</h1>
-        <p>נא למלא את הפרטים הבאים כדי לאשר את כניסתך.</p>
+    <div class="entry_page">
+        <div class="container">
+            <img src="images.jpg" alt="לוגו המרכז" class="logo"> <h1>טופס בקשת כניסה לבסיס הספקת מזון מרכז צריפין</h1>
+            <p>נא למלא את הפרטים הבאים כדי לאשר את כניסתך.</p>
 
-        <form id="entryForm">
+            <form id="entryForm">
 <!--            <div class="form-group">
-                <label for="email">כתובת מייל:</label>
-                <input type="email" id="email" name="Email Address" required>
-            </div>
+                    <label for="email">כתובת מייל:</label>
+                    <input type="email" id="email" name="Email Address" required>
+                </div>
 
-            <div class="form-group">
-                <label for="idNumber">תעודת זהות:</label>
-                <input type="tel" id="idNumber" name="תעודת זהות" required pattern="[0-9]{9}" title="אנא הזן 9 ספרות">
-            </div>-->
+                <div class="form-group">
+                    <label for="idNumber">תעודת זהות:</label>
+                    <input type="tel" id="idNumber" name="תעודת זהות" required pattern="[0-9]{9}" title="אנא הזן 9 ספרות">
+                </div>
+-->
+                <div class="form-group">
+                    <label for="firstName">שם פרטי:</label>
+                    <input type="text" id="firstName" name="שם פרטי" required>
+                </div>
 
-            <div class="form-group">
-                <label for="firstName">שם פרטי:</label>
-                <input type="text" id="firstName" name="שם פרטי" required>
-            </div>
+                <div class="form-group">
+                    <label for="lastName">שם משפחה:</label>
+                    <input type="text" id="lastName" name="שם משפחה" required>
+                </div>
 
-            <div class="form-group">
-                <label for="lastName">שם משפחה:</label>
-                <input type="text" id="lastName" name="שם משפחה" required>
-            </div>
+                <div class="form-group">
+                    <label for="phone">טלפון נייד:</label>
+                    <input type="tel" id="phone" name="טלפון נייד" required pattern="[0-9]{10}" title="אנא הזן 10 ספרות (לדוגמה: 0501234567)">
+                </div>
 
-            <div class="form-group">
-                <label for="phone">טלפון נייד:</label>
-                <input type="tel" id="phone" name="טלפון נייד" required pattern="[0-9]{10}" title="אנא הזן 10 ספרות (לדוגמה: 0501234567)">
-            </div>
+                <div class="form-group">
+                    <label>שייכות:</label>
+                    <div class="radio-group">
+                        <!-- כל אפשרות רדיו עטופה ב-div נפרד עבור שליטה טובה יותר בפריסה -->
+                        <div>
+                            <input type="radio" id="affiliation1" name="שייכות" value="בהס מזון מרכז (חייל, קבע, מילואים, אעצ)" required>
+                            <label for="affiliation1">בה"ס מזון מרכז (חייל, קבע, מילואים, אע"צ)</label>
+                        </div>
 
-             <div class="form-group">
-                <label>שייכות:</label>
-                <div class="radio-group">
-                    <!-- כל אפשרות רדיו עטופה ב-div נפרד עבור שליטה טובה יותר בפריסה -->
-                    <div>
-                        <input type="radio" id="affiliation1" name="שייכות" value="בהס מזון מרכז (חייל, קבע, מילואים, אעצ)" required>
-                        <label for="affiliation1">בה"ס מזון מרכז (חייל, קבע, מילואים, אע"צ)</label>
-                    </div>
+                        <div>
+                            <input type="radio" id="affiliation2" name="שייכות" value="שולחן מרכזי" required>
+                            <label for="affiliation2">שולחן מרכזי</label>
+                        </div>
 
-                    <div>
-                        <input type="radio" id="affiliation2" name="שייכות" value="שולחן מרכזי" required>
-                        <label for="affiliation2">שולחן מרכזי</label>
-                    </div>
+                        <div>
+                            <input type="radio" id="affiliation3" name="שייכות" value="משרת צהל" required>
+                            <label for="affiliation3">משרת צה"ל</label>
+                        </div>
 
-                    <div>
-                        <input type="radio" id="affiliation3" name="שייכות" value="משרת צהל" required>
-                        <label for="affiliation3">משרת צה"ל</label>
-                    </div>
+                        <div>
+                            <input type="radio" id="affiliation4" name="שייכות" value="אזרח / נהג אזרחי / ספק אזרחי" required>
+                            <label for="affiliation4">אזרח / נהג אזרחי / ספק אזרחי</label>
+                        </div>
 
-                    <div>
-                        <input type="radio" id="affiliation4" name="שייכות" value="אזרח / נהג אזרחי / ספק אזרחי" required>
-                        <label for="affiliation4">אזרח / נהג אזרחי / ספק אזרחי</label>
-                    </div>
+                        <div>
+                            <input type="radio" id="affiliation5" name="שייכות" value="אזרח עובד מטבח בסיס הפסקת מזון" required>
+                            <label for="affiliation5">אזרח עובד מטבח בבסיס הפסקת מזון</label>
+                        </div>
 
-                    <div>
-                        <input type="radio" id="affiliation5" name="שייכות" value="אזרח עובד מטבח בסיס הפסקת מזון" required>
-                        <label for="affiliation5">אזרח עובד מטבח בבסיס הפסקת מזון</label>
-                    </div>
-
-                    <div>
-                        <input type="radio" id="affiliation6" name="שייכות" value="חרסית" required>
-                        <label for="affiliation6">חרסית</label>
+                        <div>
+                            <input type="radio" id="affiliation6" name="שייכות" value="חרסית" required>
+                            <label for="affiliation6">חרסית</label>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <button type="submit" class="submit-button">שלח בקשת כניסה</button>
+                <button type="submit" class="submit-button">שלח בקשת כניסה</button>
 
-            <div id="responseMessage" class="message"></div>
-        </form>
+                <div id="responseMessage" class="message"></div>
+            </form>
+        </div>
+        <div class="login-link-container">
+            <a href="login.html" class="small-login-link">כניסת משתמשים</a>
+        </div>
     </div>
 
     <script>
