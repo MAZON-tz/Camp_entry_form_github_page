@@ -31,7 +31,7 @@
     </div>
 
     <script>
-        console.log("בדיקה");
+/*        console.log("בדיקה");
         const loginForm = document.getElementById('loginForm');
         const loginResponseMessage = document.getElementById('loginResponseMessage');
 
@@ -91,7 +91,7 @@
                     loginResponseMessage.className = 'message error';
                 }
             }
-*/            {
+            {
                 const response = await fetch(loginWebAppUrl, 
                 {
                     method: 'POST',
@@ -144,6 +144,67 @@
                 loginResponseMessage.className = 'message error';
             }
         });
-    </script>
+*/
+        const loginForm = document.getElementById('loginForm');
+        const loginResponseMessage = document.getElementById('loginResponseMessage');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            loginResponseMessage.textContent = 'מתחבר...';
+            loginResponseMessage.className = 'message sending';
+
+            const formData = new FormData(loginForm);
+            const credentials = {};
+            // כעת אנו שולחים רק את הסיסמה (name="password")
+            credentials.password = formData.get('password');
+
+            // כתובת ה-Web App לכניסה - ודא שזו הכתובת הנכונה מהפריסה האחרונה של Apps Script
+            const loginWebAppUrl = 'YOUR_LOGIN_WEB_APP_URL_HERE'; // *** חשוב: לשנות את זה! ***
+
+            try {
+                const response = await fetch(loginWebAppUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(credentials),
+                });
+
+                // שורות דיבוג: קורא את התשובה כטקסט ואז מנסה לפרסר כ-JSON
+                console.log('Raw login response:', response);
+                const responseText = await response.text(); 
+                console.log('Login response text:', responseText);
+                const result = JSON.parse(responseText); 
+                // סוף שורות דיבוג
+
+                if (result.success) {
+                    loginResponseMessage.textContent = 'התחברת בהצלחה!';
+                    loginResponseMessage.className = 'message success';
+
+                    // שמירת סוג המשתמש והדף ב-localStorage
+                    localStorage.setItem('userType', result.userType);
+                    localStorage.setItem('userPage', result.userPage);
+
+                    // הפניה לדף המתאים לפי סוג המשתמש
+                    if (result.userPage) {
+                        window.location.href = result.userPage;
+                    } else {
+                        // אם אין דף ספציפי, אפשר להפנות לדף ברירת מחדל
+                        window.location.href = 'default-dashboard.html'; 
+                    }
+
+                } else {
+                    loginResponseMessage.textContent = `סיסמה שגויה. ${result.error || ''}`;
+                    loginResponseMessage.className = 'message error';
+                }
+            } catch (error) {
+                console.error('Login Error (frontend catch):', error);
+                loginResponseMessage.textContent = 'אירעה שגיאה בחיבור. אנא נסה שוב.';
+                loginResponseMessage.className = 'message error';
+            }
+        });
+</script>
 </body>
 </html>
