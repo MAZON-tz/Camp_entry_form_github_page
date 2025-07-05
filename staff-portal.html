@@ -95,7 +95,7 @@
             try {
                 const response = await fetch(staffOperationsWebAppUrl, {
                     method: 'POST', // נשתמש ב-POST גם עבור GET כדי להעביר פרמטרים בצורה נוחה
-                    mode: 'no-cors',
+                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         action: 'fetchData', 
@@ -149,7 +149,7 @@
             try {
                 const response = await fetch(staffOperationsWebAppUrl, {
                     method: 'POST',
-                    mode: 'no-cors',
+                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         action: 'updateStatus', 
