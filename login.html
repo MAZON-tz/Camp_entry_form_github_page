@@ -160,7 +160,7 @@
             credentials.password = formData.get('password');
 
             // כתובת ה-Web App לכניסה - ודא שזו הכתובת הנכונה מהפריסה האחרונה של Apps Script
-            const loginWebAppUrl = 'YOUR_LOGIN_WEB_APP_URL_HERE'; // *** חשוב: לשנות את זה! ***
+            const loginWebAppUrl = 'https://script.google.com/macros/s/AKfycbxzKX46GT6yA4JKYhBKKD8qrvQG4DVZ7Dpits7r1ZdJqWlN16_JFOeLc4-k2hNCZ6p6xg/exec'; // *** חשוב: לשנות את זה! ***
 
             try {
                 const response = await fetch(loginWebAppUrl, {
