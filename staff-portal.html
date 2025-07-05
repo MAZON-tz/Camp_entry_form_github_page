@@ -96,7 +96,7 @@
                 const response = await fetch(staffOperationsWebAppUrl, {
                     method: 'POST', // נשתמש ב-POST גם עבור GET כדי להעביר פרמטרים בצורה נוחה
                     mode: 'cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({ 
                         action: 'fetchData', 
                         status: statusFilter, 
