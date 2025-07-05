@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פורטל סגל</title>
+    <link rel="stylesheet" href="staff-portal.css">
+</head>
+<body>
+    <div class="portal-container">
+        <header>
+            <img src="images.jpg" alt="לוגו המרכז" class="portal-logo">
+            <h1>פורטל סגל</h1>
+            <div class="user-info">
+                <span id="userGreeting"></span>
+                <button id="logoutButton" class="logout-button">התנתק</button>
+            </div>
+            <nav class="portal-nav">
+                <button id="approverViewBtn" class="nav-button active">אישור כניסה</button>
+                <button id="updaterViewBtn" class="nav-button">עדכון יציאה</button>
+            </nav>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="חיפוש לפי טלפון או מזהה כניסה">
+                <button id="searchButton">חפש</button>
+                <div id="searchMessage" class="message" style="display: none;"></div>
+            </div>
+        </header>
+
+        <main id="contentArea">
+            <!-- תוכן הטבלה יטען כאן -->
+        </main>
+    </div>
+
+    <script>
+        const staffOperationsWebAppUrl = 'https://script.google.com/macros/s/AKfycbyOkU-vjA3P8WA6q4kdetYgIGBhpSsai4TsbbaSaXtf6nNBpltv6Vqk5pPi4iqhA3o4/exec'; 
+        // *** יוחלף ב-URL של סקריפט הפעולות סגל ***
+        const mainSheetId = '1f0m1fQQG_uvYM7G-w7OJgiSfOUJ0wRMpI2PKoGaO5jg'; // *** מזהה הגיליון הראשי של הנתונים ***
+        const mainSheetName = 'Form_Responses'; // *** שם הגיליון הראשי של הנתונים ***
+
+        const userGreeting = document.getElementById('userGreeting');
+        const logoutButton = document.getElementById('logoutButton');
+        const approverViewBtn = document.getElementById('approverViewBtn');
+        const updaterViewBtn = document.getElementById('updaterViewBtn');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const searchMessage = document.getElementById('searchMessage');
+        const contentArea = document.getElementById('contentArea');
+
+        let currentUserType = localStorage.getItem('userType');
+        let currentView = 'approver'; // ברירת מחדל: מאשר כניסה
+
+        // --- בדיקת אימות בסיסית ---
+        if (!currentUserType) {
+            alert('אין לך הרשאה לגשת לדף זה. אנא התחבר.');
+            window.location.href = 'login.html';
+        }
+        userGreeting.textContent = `שלום, ${currentUserType}!`; // הצגת סוג המשתמש
+
+        // --- ניתוק מהמערכת ---
+        logoutButton.addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+
+        // --- פונקציית טעינת נתונים ---
+        async function fetchAndRenderData(view, searchTerm = '') {
+            contentArea.innerHTML = '<p class="loading-message">טוען נתונים...</p>';
+            searchMessage.style.display = 'none';
+
+            let statusFilter = '';
+            let columnsToDisplay = [];
+            let actionButtonsHtml = '';
+            let tableHeaders = '';
+
+            if (view === 'approver') {
+                if (currentUserType === 'מאשר כניסה' || currentUserType === 'Admin') { // רק למאשרי כניסה/אדמינים
+                    statusFilter = 'ממתין לאישור כניסה';
+                    columnsToDisplay = ['שם פרטי', 'שם משפחה', 'מספר מזהה כניסה'];
+                    tableHeaders = '<th>שם פרטי</th><th>שם משפחה</th><th>מספר מזהה כניסה</th><th>פעולות</th>';
+                } else {
+                    contentArea.innerHTML = '<p class="access-denied-message">אין לך הרשאה לצפות בדף אישור כניסה.</p>';
+                    return;
+                }
+            } else if (view === 'updater') {
+                if (currentUserType === 'מעדכן יציאה' || currentUserType === 'Admin') { // רק למעדכני יציאה/אדמינים
+                    statusFilter = 'נכנס לבסיס';
+                    columnsToDisplay = ['שם פרטי', 'שם משפחה', 'טלפון נייד', 'מספר מזהה כניסה'];
+                    tableHeaders = '<th>שם פרטי</th><th>שם משפחה</th><th>טלפון נייד</th><th>מספר מזהה כניסה</th><th>פעולות</th>';
+                } else {
+                    contentArea.innerHTML = '<p class="access-denied-message">אין לך הרשאה לצפות בדף עדכון יציאה.</p>';
+                    return;
+                }
+            }
+
+            try {
+                const response = await fetch(staffOperationsWebAppUrl, {
+                    method: 'POST', // נשתמש ב-POST גם עבור GET כדי להעביר פרמטרים בצורה נוחה
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'fetchData', 
+                        status: statusFilter, 
+                        searchTerm: searchTerm,
+                        sheetId: mainSheetId, // נעביר את מזהה הגיליון הראשי לסקריפט
+                        sheetName: mainSheetName // וגם את שם הגיליון
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success && result.data && result.data.length > 0) {
+                    let tableHtml = `<table><thead><tr>${tableHeaders}</tr></thead><tbody>`;
+                    result.data.forEach(row => {
+                        let rowDataHtml = '';
+                        columnsToDisplay.forEach(colName => {
+                            rowDataHtml += `<td>${row[colName] || ''}</td>`;
+                        });
+
+                        // הוספת כפתורי פעולה
+                        let buttons = '';
+                        if (view === 'approver') {
+                             buttons += `<button class="action-button approve-button" data-entryid="${row['מספר מזהה כניסה']}" data-newstatus="נכנס לבסיס">אשר כניסה</button>`;
+                             buttons += `<button class="action-button deny-button" data-entryid="${row['מספר מזהה כניסה']}" data-newstatus="לא אושרה כניסה">בטל כניסה</button>`;
+                        } else if (view === 'updater') {
+                             buttons += `<button class="action-button exit-button" data-entryid="${row['מספר מזהה כניסה']}" data-newstatus="יצא מהבסיס">יצא מהבסיס</button>`;
+                        }
+                        
+                        tableHtml += `<tr>${rowDataHtml}<td>${buttons}</td></tr>`;
+                    });
+                    tableHtml += `</tbody></table>`;
+                    contentArea.innerHTML = tableHtml;
+                    addActionButtonListeners(); // הוספת מאזיני אירועים לכפתורים
+                } else {
+                    contentArea.innerHTML = `<p class="no-results-message">${result.message || 'לא נמצאו רשומות מתאימות.'}</p>`;
+                }
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                contentArea.innerHTML = '<p class="error-message">אירעה שגיאה בטעינת הנתונים. אנא נסה שוב.</p>';
+            }
+        }
+
+        // --- פונקציית עדכון סטטוס ---
+        async function updateEntryStatus(entryId, newStatus) {
+            searchMessage.textContent = 'מעדכן סטטוס...';
+            searchMessage.className = 'message sending';
+            searchMessage.style.display = 'block';
+
+            try {
+                const response = await fetch(staffOperationsWebAppUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'updateStatus', 
+                        entryId: entryId, 
+                        newStatus: newStatus,
+                        sheetId: mainSheetId,
+                        sheetName: mainSheetName
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    searchMessage.textContent = `סטטוס עודכן בהצלחה!`;
+                    searchMessage.className = 'message success';
+                    setTimeout(() => { searchMessage.style.display = 'none'; }, 3000); // הסתר הודעה אחרי 3 שניות
+                    fetchAndRenderData(currentView, searchInput.value); // רענן את הטבלה
+                } else {
+                    searchMessage.textContent = `שגיאה בעדכון סטטוס: ${result.error || 'שגיאה לא ידועה'}`;
+                    searchMessage.className = 'message error';
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                searchMessage.textContent = 'שגיאה ברשת בעת עדכון סטטוס. נסה שוב.';
+                searchMessage.className = 'message error';
+            }
+        }
+
+        // --- הוספת מאזיני אירועים לכפתורי הפעולה בטבלה ---
+        function addActionButtonListeners() {
+            document.querySelectorAll('.action-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const entryId = e.target.dataset.entryid;
+                    const newStatus = e.target.dataset.newstatus;
+                    if (confirm(`האם אתה בטוח שברצונך לשנות את הסטטוס של מספר מזהה ${entryId} ל- '${newStatus}'?`)) {
+                        updateEntryStatus(entryId, newStatus);
+                    }
+                });
+            });
+        }
+        
+        // --- ניווט בין העמודים ---
+        approverViewBtn.addEventListener('click', () => {
+            currentView = 'approver';
+            approverViewBtn.classList.add('active');
+            updaterViewBtn.classList.remove('active');
+            searchInput.value = ''; // נקה חיפוש במעבר בין תצוגות
+            fetchAndRenderData(currentView);
+        });
+
+        updaterViewBtn.addEventListener('click', () => {
+            currentView = 'updater';
+            updaterViewBtn.classList.add('active');
+            approverViewBtn.classList.remove('active');
+            searchInput.value = ''; // נקה חיפוש במעבר בין תצוגות
+            fetchAndRenderData(currentView);
+        });
+
+        // --- חיפוש ---
+        searchButton.addEventListener('click', () => {
+            fetchAndRenderData(currentView, searchInput.value);
+        });
+
+        // מאפשר חיפוש גם בלחיצה על Enter בשדה החיפוש
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchButton.click();
+            }
+        });
+
+
+        // --- טעינה ראשונית של התצוגה המתאימה לפי סוג המשתמש ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (currentUserType === 'מאשר כניסה') {
+                approverViewBtn.click(); // טוען את תצוגת המאשרים
+            } else if (currentUserType === 'מעדכן יציאה') {
+                updaterViewBtn.click(); // טוען את תצוגת המעדכנים
+            } else if (currentUserType === 'Admin') {
+                // אדמין יכול לראות את שניהם, נחליט על ברירת מחדל
+                approverViewBtn.click(); // אדמין יתחיל בתצוגת המאשרים
+            } else {
+                alert('סוג משתמש לא מזוהה. אנא התחבר מחדש.');
+                window.location.href = 'login.html';
+            }
+        });
+ 
+   </script>
+</body>
+</html>

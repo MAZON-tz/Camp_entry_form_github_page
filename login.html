@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>כניסת משתמשים</title>
+    <link rel="stylesheet" href="login.css"> <!-- קישור לקובץ ה-CSS החדש -->
+</head>
+<body>
+    <div class="login-container">
+        <img src="images.jpg" alt="לוגו המרכז" class="login-logo">
+        <h1>כניסת משתמשים</h1>
+        <p>הכנס מפתח כדי להתחבר לדף המתאים</p>
+
+        <form id="loginForm">
+            <!-- הסרנו את שדה שם המשתמש -->
+            <!-- <div class="form-group">
+                <label for="username">שם משתמש:</label>
+                <input type="text" id="username" name="username" required placeholder="הקלד שם משתמש">
+            </div> -->
+
+            <div class="form-group">
+                <label for="password">מפתח:</label>
+                <input type="password" id="password" name="password" required placeholder="הקלד מפתח מזהה יחודי">
+            </div>
+
+            <button type="submit" class="login-button">התחבר</button>
+
+            <div id="loginResponseMessage" class="message"></div>
+        </form>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loginResponseMessage = document.getElementById('loginResponseMessage');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            loginResponseMessage.textContent = 'מתחבר...';
+            loginResponseMessage.className = 'message sending';
+
+            const formData = new FormData(loginForm);
+            const credentials = {};
+            // כעת אנו שולחים רק את הסיסמה (name="password")
+            credentials.password = formData.get('password');
+
+            // כתובת ה-Web App החדשה לכניסה - נשנה אותה בהמשך!
+            const loginWebAppUrl = 'https://script.google.com/macros/s/AKfycbyAJK64T-B0rSTYxpKL9nZQkPjpqBe4XYoU1AOLItTUs5h7Ez5DxT9r3VAU9Zhpyjl19g/exec'; // *** חשוב: לשנות את זה! ***
+
+            try {
+                const response = await fetch(loginWebAppUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(credentials),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    loginResponseMessage.textContent = 'התחברת בהצלחה!';
+                    loginResponseMessage.className = 'message success';
+
+                    // שמירת סוג המשתמש (לדוגמה ב-localStorage) לצורך שימוש בדפי המנהלים
+                    // זוהי דרך בסיסית לשמור סטייט, לא מומלץ לאחסון מידע רגיש.
+                    localStorage.setItem('userType', result.userType);
+                    localStorage.setItem('userPage', result.userPage);
+
+                    // הפניה לדף המתאים לפי סוג המשתמש
+                    if (result.userPage) {
+                        window.location.href = result.userPage;
+                    } else {
+                        // אם אין דף ספציפי, אפשר להפנות לדף ברירת מחדל
+                        window.location.href = 'default-dashboard.html';
+                    }
+
+                } else {
+                    loginResponseMessage.textContent = `סיסמה שגויה. ${result.error || ''}`;
+                    loginResponseMessage.className = 'message error';
+                }
+            } catch (error) {
+                console.error('Login Error:', error);
+                loginResponseMessage.textContent = 'אירעה שגיאה בחיבור. אנא נסה שוב.';
+                loginResponseMessage.className = 'message error';
+            }
+        });
+    </script>
+</body>
+</html>
