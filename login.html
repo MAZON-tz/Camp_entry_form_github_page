@@ -160,10 +160,10 @@
             credentials.password = formData.get('password');
 
             // כתובת ה-Web App לכניסה - ודא שזו הכתובת הנכונה מהפריסה האחרונה של Apps Script
-            const loginWebAppUrl = 'https://script.google.com/macros/s/AKfycbziPHbVkVx1fakeuKqZOqSY-16Iu26vIFzBO54oCFY35EWigiCzTbEjyO22OkNVx6Hy8g/exec'; // *** חשוב: לשנות את זה! ***
+            const loginWebAppUrl = 'https://script.google.com/macros/s/AKfycbxrFG7Fs84IevpbJsRd5F7iyoXd3n2_RYBO9tvmt9QIZTmk563uM0oZLYI-n82tID_N/exec'; // *** חשוב: לשנות את זה! ***
 
             try {
-                const response = await fetch(loginWebAppUrl, {
+/*                const response = await fetch(loginWebAppUrl, {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
@@ -178,6 +178,17 @@
                 console.log('Login response text:', responseText);
                 const result = JSON.parse(responseText); 
                 // סוף שורות דיבוג
+*/
+                const response = await fetch(loginWebAppUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                });
+
+                const result = await response.json();
 
                 if (result.success) {
                     loginResponseMessage.textContent = 'התחברת בהצלחה!';
