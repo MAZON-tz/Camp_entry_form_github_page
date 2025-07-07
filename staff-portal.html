@@ -16,7 +16,7 @@
                 <button id="logoutButton" class="logout-button">התנתק</button>
             </div>
             <nav class="portal-nav">
-                <button id="approverViewBtn" class="nav-button active">אישור כניסה</button>
+                <button id="approverViewBtn" class="nav-button active">עדכון כניסה</button>
                 <button id="updaterViewBtn" class="nav-button">עדכון יציאה</button>
             </nav>
             <div class="search-bar">
@@ -261,10 +261,12 @@
             alert('אין לך הרשאה לגשת לדף זה. אנא התחבר.');
             window.location.href = 'login.html';
         }
-
+        
+        userGreeting.textContent = `שלום, ${currentUserType}!`; // הצגת סוג המשתמש
 
         // --- ניתוק מהמערכת ---
-        logoutButton.addEventListener('click', () => {
+        logoutButton.addEventListener('click', () => 
+        {
             localStorage.clear();
             window.location.href = 'login.html';
         });
@@ -289,7 +291,8 @@
                 tableHeaders = '<th>שם פרטי</th><th>שם משפחה</th><th>טלפון נייד</th><th>מספר מזהה כניסה</th><th>פעולות</th>';
             }
 
-            try {
+            try 
+            {   console.log("first");
                 const response = await fetch(staffOperationsWebAppUrl, {
                     redirect: 'follow', // התאמה ל-login.html
                     method: 'POST',
@@ -302,7 +305,7 @@
                         sheetName: mainSheetName 
                     })
                 });
-
+                
                 // קריאת התשובה כטקסט ואז ניתוח כ-JSON - התאמה ל-login.html
                 const responseText = await response.text(); 
                 const result = JSON.parse(responseText); 
