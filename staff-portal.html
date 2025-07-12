@@ -111,8 +111,8 @@
 
                         let buttons = '';
                         if (view === 'approver') {
-                             buttons += `<button class="action-button approve-button" data-entryid="${row['מספר מזהה כניסה']}" data-newstatus="נכנס לבסיס">אשר כניסה</button>`;
-                             buttons += `<button class="action-button deny-button" data-entryid="${row['מספר מזהה כניסה']}" data-newstatus="לא אושרה כניסה">בטל כניסה</button>`;
+                             buttons += `<button class="action-button approve-button" data-entryid="${row['מספר מזהה כניסה']}" data-newstatus="נכנס לבסיס">נכנס לבסיס</button>`;
+                             buttons += `<button class="action-button deny-button" data-entryid="${row['מספר מזהה כניסה']}" data-newstatus="לא אושרה כניסה">לא נכנס לבסיס</button>`;
                         } else if (view === 'updater') {
                              buttons += `<button class="action-button exit-button" data-entryid="${row['מספר מזהה כניסה']}" data-newstatus="יצא מהבסיס">יצא מהבסיס</button>`;
                         }
