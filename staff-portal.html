@@ -16,7 +16,7 @@
                 <button id="logoutButton" class="logout-button">התנתק</button>
             </div>
             <nav class="portal-nav">
-                <button id="approverViewBtn" class="nav-button active">אישור כניסה</button>
+                <button id="approverViewBtn" class="nav-button active">עדכון כניסה</button>
                 <button id="updaterViewBtn" class="nav-button">עדכון יציאה</button>
             </nav>
             <div class="search-bar">
@@ -30,14 +30,12 @@
             <!-- תוכן הטבלה יטען כאן -->
         </main>
     </div>
-
-    <script>
+   <script>
         const staffOperationsWebAppUrl = 'https://script.google.com/macros/s/AKfycbyOkU-vjA3P8WA6q4kdetYgIGBhpSsai4TsbbaSaXtf6nNBpltv6Vqk5pPi4iqhA3o4/exec'; 
         // *** יוחלף ב-URL של סקריפט הפעולות סגל ***
         const mainSheetId = '1f0m1fQQG_uvYM7G-w7OJgiSfOUJ0wRMpI2PKoGaO5jg'; // *** מזהה הגיליון הראשי של הנתונים ***
         const mainSheetName = 'Form_Responses'; // *** שם הגיליון הראשי של הנתונים ***
 
-        const userGreeting = document.getElementById('userGreeting');
         const logoutButton = document.getElementById('logoutButton');
         const approverViewBtn = document.getElementById('approverViewBtn');
         const updaterViewBtn = document.getElementById('updaterViewBtn');
@@ -54,59 +52,54 @@
             alert('אין לך הרשאה לגשת לדף זה. אנא התחבר.');
             window.location.href = 'login.html';
         }
+        
         userGreeting.textContent = `שלום, ${currentUserType}!`; // הצגת סוג המשתמש
 
         // --- ניתוק מהמערכת ---
-        logoutButton.addEventListener('click', () => {
+        logoutButton.addEventListener('click', () => 
+        {
             localStorage.clear();
             window.location.href = 'login.html';
         });
 
         // --- פונקציית טעינת נתונים ---
-        async function fetchAndRenderData(view, searchTerm = '') {
+        async function fetchAndRenderData(view, searchTerm = '') 
+        {
             contentArea.innerHTML = '<p class="loading-message">טוען נתונים...</p>';
             searchMessage.style.display = 'none';
 
             let statusFilter = '';
             let columnsToDisplay = [];
-            let actionButtonsHtml = '';
             let tableHeaders = '';
 
             if (view === 'approver') {
-                if (currentUserType === 'מאשר כניסה' || currentUserType === 'Admin') { // רק למאשרי כניסה/אדמינים
-                    statusFilter = 'ממתין לאישור כניסה';
-                    columnsToDisplay = ['שם פרטי', 'שם משפחה', 'מספר מזהה כניסה'];
-                    tableHeaders = '<th>שם פרטי</th><th>שם משפחה</th><th>מספר מזהה כניסה</th><th>פעולות</th>';
-                } else {
-                    contentArea.innerHTML = '<p class="access-denied-message">אין לך הרשאה לצפות בדף אישור כניסה.</p>';
-                    return;
-                }
+                statusFilter = 'ממתין לאישור כניסה';
+                columnsToDisplay = ['שם פרטי', 'שם משפחה', 'מספר מזהה כניסה'];
+                tableHeaders = '<th>שם פרטי</th><th>שם משפחה</th><th>מספר מזהה כניסה</th><th>פעולות</th>';
             } else if (view === 'updater') {
-                if (currentUserType === 'מעדכן יציאה' || currentUserType === 'Admin') { // רק למעדכני יציאה/אדמינים
-                    statusFilter = 'נכנס לבסיס';
-                    columnsToDisplay = ['שם פרטי', 'שם משפחה', 'טלפון נייד', 'מספר מזהה כניסה'];
-                    tableHeaders = '<th>שם פרטי</th><th>שם משפחה</th><th>טלפון נייד</th><th>מספר מזהה כניסה</th><th>פעולות</th>';
-                } else {
-                    contentArea.innerHTML = '<p class="access-denied-message">אין לך הרשאה לצפות בדף עדכון יציאה.</p>';
-                    return;
-                }
+                statusFilter = 'נכנס לבסיס';
+                columnsToDisplay = ['שם פרטי', 'שם משפחה', 'טלפון נייד', 'מספר מזהה כניסה'];
+                tableHeaders = '<th>שם פרטי</th><th>שם משפחה</th><th>טלפון נייד</th><th>מספר מזהה כניסה</th><th>פעולות</th>';
             }
 
-            try {
+            try 
+            {   console.log("first");
                 const response = await fetch(staffOperationsWebAppUrl, {
-                    method: 'POST', // נשתמש ב-POST גם עבור GET כדי להעביר פרמטרים בצורה נוחה
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    redirect: 'follow', // התאמה ל-login.html
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // התאמה ל-login.html
                     body: JSON.stringify({ 
                         action: 'fetchData', 
                         status: statusFilter, 
                         searchTerm: searchTerm,
-                        sheetId: mainSheetId, // נעביר את מזהה הגיליון הראשי לסקריפט
-                        sheetName: mainSheetName // וגם את שם הגיליון
+                        sheetId: mainSheetId, 
+                        sheetName: mainSheetName 
                     })
                 });
-
-                const result = await response.json();
+                
+                // קריאת התשובה כטקסט ואז ניתוח כ-JSON - התאמה ל-login.html
+                const responseText = await response.text(); 
+                const result = JSON.parse(responseText); 
 
                 if (result.success && result.data && result.data.length > 0) {
                     let tableHtml = `<table><thead><tr>${tableHeaders}</tr></thead><tbody>`;
@@ -116,7 +109,6 @@
                             rowDataHtml += `<td>${row[colName] || ''}</td>`;
                         });
 
-                        // הוספת כפתורי פעולה
                         let buttons = '';
                         if (view === 'approver') {
                              buttons += `<button class="action-button approve-button" data-entryid="${row['מספר מזהה כניסה']}" data-newstatus="נכנס לבסיס">אשר כניסה</button>`;
@@ -129,7 +121,7 @@
                     });
                     tableHtml += `</tbody></table>`;
                     contentArea.innerHTML = tableHtml;
-                    addActionButtonListeners(); // הוספת מאזיני אירועים לכפתורים
+                    addActionButtonListeners();
                 } else {
                     contentArea.innerHTML = `<p class="no-results-message">${result.message || 'לא נמצאו רשומות מתאימות.'}</p>`;
                 }
@@ -141,16 +133,17 @@
         }
 
         // --- פונקציית עדכון סטטוס ---
-        async function updateEntryStatus(entryId, newStatus) {
+        async function updateEntryStatus(entryId, newStatus) 
+        {
             searchMessage.textContent = 'מעדכן סטטוס...';
             searchMessage.className = 'message sending';
             searchMessage.style.display = 'block';
 
             try {
                 const response = await fetch(staffOperationsWebAppUrl, {
+                    redirect: 'follow', // התאמה ל-login.html
                     method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // התאמה ל-login.html
                     body: JSON.stringify({ 
                         action: 'updateStatus', 
                         entryId: entryId, 
@@ -160,13 +153,15 @@
                     })
                 });
 
-                const result = await response.json();
+                // קריאת התשובה כטקסט ואז ניתוח כ-JSON - התאמה ל-login.html
+                const responseText = await response.text(); 
+                const result = JSON.parse(responseText); 
 
                 if (result.success) {
                     searchMessage.textContent = `סטטוס עודכן בהצלחה!`;
                     searchMessage.className = 'message success';
-                    setTimeout(() => { searchMessage.style.display = 'none'; }, 3000); // הסתר הודעה אחרי 3 שניות
-                    fetchAndRenderData(currentView, searchInput.value); // רענן את הטבלה
+                    setTimeout(() => { searchMessage.style.display = 'none'; }, 3000);
+                    fetchAndRenderData(currentView, searchInput.value);
                 } else {
                     searchMessage.textContent = `שגיאה בעדכון סטטוס: ${result.error || 'שגיאה לא ידועה'}`;
                     searchMessage.className = 'message error';
@@ -179,7 +174,8 @@
         }
 
         // --- הוספת מאזיני אירועים לכפתורי הפעולה בטבלה ---
-        function addActionButtonListeners() {
+        function addActionButtonListeners() 
+        {
             document.querySelectorAll('.action-button').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const entryId = e.target.dataset.entryid;
@@ -192,50 +188,54 @@
         }
         
         // --- ניווט בין העמודים ---
-        approverViewBtn.addEventListener('click', () => {
+        approverViewBtn.addEventListener('click', () => 
+        {
             currentView = 'approver';
             approverViewBtn.classList.add('active');
             updaterViewBtn.classList.remove('active');
-            searchInput.value = ''; // נקה חיפוש במעבר בין תצוגות
+            searchInput.value = '';
             fetchAndRenderData(currentView);
         });
 
-        updaterViewBtn.addEventListener('click', () => {
+        updaterViewBtn.addEventListener('click', () => 
+        {
             currentView = 'updater';
             updaterViewBtn.classList.add('active');
             approverViewBtn.classList.remove('active');
-            searchInput.value = ''; // נקה חיפוש במעבר בין תצוגות
+            searchInput.value = '';
             fetchAndRenderData(currentView);
         });
 
         // --- חיפוש ---
-        searchButton.addEventListener('click', () => {
+        searchButton.addEventListener('click', () => 
+        {
             fetchAndRenderData(currentView, searchInput.value);
         });
 
-        // מאפשר חיפוש גם בלחיצה על Enter בשדה החיפוש
-        searchInput.addEventListener('keypress', (e) => {
+        searchInput.addEventListener('keypress', (e) => 
+        {
             if (e.key === 'Enter') {
                 searchButton.click();
             }
         });
 
 
-        // --- טעינה ראשונית של התצוגה המתאימה לפי סוג המשתמש ---
-        document.addEventListener('DOMContentLoaded', () => {
-            if (currentUserType === 'מאשר כניסה') {
-                approverViewBtn.click(); // טוען את תצוגת המאשרים
-            } else if (currentUserType === 'מעדכן יציאה') {
-                updaterViewBtn.click(); // טוען את תצוגת המעדכנים
-            } else if (currentUserType === 'Admin') {
-                // אדמין יכול לראות את שניהם, נחליט על ברירת מחדל
-                approverViewBtn.click(); // אדמין יתחיל בתצוגת המאשרים
-            } else {
-                alert('סוג משתמש לא מזוהה. אנא התחבר מחדש.');
-                window.location.href = 'login.html';
+        // --- טעינה ראשונית של התצוגה ---
+        document.addEventListener('DOMContentLoaded', () => 
+        {
+            if (!mainSheetId || mainSheetId === 'YOUR_MAIN_SHEET_ID_HERE') {
+                console.error("Error: mainSheetId is not set correctly in staff-portal.html");
+                contentArea.innerHTML = '<p class="error-message">שגיאה: מזהה הגיליון הראשי לא הוגדר.</p>';
+                return;
             }
+            if (!mainSheetName || mainSheetName === 'YOUR_MAIN_SHEET_NAME_HERE') {
+                console.error("Error: mainSheetName is not set correctly in staff-portal.html");
+                contentArea.innerHTML = '<p class="error-message">שגיאה: שם הגיליון הראשי לא הוגדר.</p>';
+                return;
+            }
+            
+            updaterViewBtn.click();
         });
- 
    </script>
 </body>
 </html>

@@ -31,6 +31,7 @@
     </div>
 
     <script>
+/*        console.log("בדיקה");
         const loginForm = document.getElementById('loginForm');
         const loginResponseMessage = document.getElementById('loginResponseMessage');
 
@@ -46,9 +47,10 @@
             credentials.password = formData.get('password');
 
             // כתובת ה-Web App החדשה לכניסה - נשנה אותה בהמשך!
-            const loginWebAppUrl = 'https://script.google.com/macros/s/AKfycbyAJK64T-B0rSTYxpKL9nZQkPjpqBe4XYoU1AOLItTUs5h7Ez5DxT9r3VAU9Zhpyjl19g/exec'; // *** חשוב: לשנות את זה! ***
+            const loginWebAppUrl = 'https://script.google.com/macros/s/AKfycby_JdPMWPcwYgQbv8A9dHlzQ17jgVPjqUVKgXWs8jqxPBJgiQHxA9GZANrL2iu9UOPrIw/exec'; // *** חשוב: לשנות את זה! ***
 
-            try {
+            try 
+ /*           {
                 const response = await fetch(loginWebAppUrl, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -58,9 +60,56 @@
                     body: JSON.stringify(credentials),
                 });
 
-                const result = await response.json();
+                // שורות דיבוג: קורא את התשובה כטקסט ואז מנסה לפרסר כ-JSON
+                console.log('Raw login response:', response);
+                const responseText = await response.text(); 
+                console.log('Login response text:', responseText);
+                const result = JSON.parse(responseText); 
+                // סוף שורות דיבוג
 
-                if (result.success) {
+                if (result.success) 
+                {
+                    loginResponseMessage.textContent = 'התחברת בהצלחה!';
+                    loginResponseMessage.className = 'message success';
+
+                    // שמירת סוג המשתמש והדף ב-localStorage
+                    localStorage.setItem('userType', result.userType);
+                    localStorage.setItem('userPage', result.userPage);
+
+                    // הפניה לדף המתאים לפי סוג המשתמש
+                    if (result.userPage) {
+                        window.location.href = result.userPage;
+                    } else {
+                        // אם אין דף ספציפי, אפשר להפנות לדף ברירת מחדל
+                        window.location.href = 'default-dashboard.html'; 
+                    }
+
+                } 
+                else 
+                {
+                    loginResponseMessage.textContent = `סיסמה שגויה. ${result.error || ''}`;
+                    loginResponseMessage.className = 'message error';
+                }
+            }
+            {
+                const response = await fetch(loginWebAppUrl, 
+                {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: 
+                    {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(credentials),
+                });
+
+                console.log("befor enter result");
+                const result = await response.json();
+                console.log("after enter result");
+
+                if (result.success) 
+                {
+                    console.log("in if result.success");
                     loginResponseMessage.textContent = 'התחברת בהצלחה!';
                     loginResponseMessage.className = 'message success';
 
@@ -71,10 +120,90 @@
 
                     // הפניה לדף המתאים לפי סוג המשתמש
                     if (result.userPage) {
+                        console.log("in if result.userpage");
+                        window.location.href = result.userPage;
+                    } else 
+                    {
+                        // אם אין דף ספציפי, אפשר להפנות לדף ברירת מחדל
+                        console.log("in else result.userpage");
+                        window.location.href = 'default-dashboard.html';
+                    }
+
+                } 
+                else 
+                {
+                    console.log("in else result.success");
+                    loginResponseMessage.textContent = `סיסמה שגויה. ${result.error || ''}`;
+                    loginResponseMessage.className = 'message error';
+                }
+            }
+            catch (error) 
+            {
+                console.error('Login Error:', error);
+                loginResponseMessage.textContent = 'אירעה שגיאה בחיבור. אנא נסה שוב.';
+                loginResponseMessage.className = 'message error';
+            }
+        });
+*/
+        const loginForm = document.getElementById('loginForm');
+        const loginResponseMessage = document.getElementById('loginResponseMessage');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            loginResponseMessage.textContent = 'מתחבר...';
+            loginResponseMessage.className = 'message sending';
+
+            const formData = new FormData(loginForm);
+            const credentials = {};
+            // כעת אנו שולחים רק את הסיסמה (name="password")
+            credentials.password = formData.get('password');
+
+            // כתובת ה-Web App לכניסה - ודא שזו הכתובת הנכונה מהפריסה האחרונה של Apps Script
+            const loginWebAppUrl = 'https://script.google.com/macros/s/AKfycbziPHbVkVx1fakeuKqZOqSY-16Iu26vIFzBO54oCFY35EWigiCzTbEjyO22OkNVx6Hy8g/exec'; // *** חשוב: לשנות את זה! ***
+
+            try {
+                const response = await fetch(loginWebAppUrl, {
+                    method: 'POST',
+                    //mode: 'cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
+                    body: JSON.stringify(credentials),
+                });
+
+                // שורות דיבוג: קורא את התשובה כטקסט ואז מנסה לפרסר כ-JSON
+                console.log('Raw login response:', response);
+                const responseText = await response.text(); 
+                console.log('Login response text:', responseText);
+                const result = JSON.parse(responseText); 
+                // סוף שורות דיבוג
+/*
+                const response = await fetch(loginWebAppUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                });
+
+                const result = await response.json();
+*/
+                if (result.success) {
+                    loginResponseMessage.textContent = 'התחברת בהצלחה!';
+                    loginResponseMessage.className = 'message success';
+
+                    // שמירת סוג המשתמש והדף ב-localStorage
+                    localStorage.setItem('userType', result.userType);
+                    localStorage.setItem('userPage', result.userPage);
+
+                    // הפניה לדף המתאים לפי סוג המשתמש
+                    if (result.userPage) {
                         window.location.href = result.userPage;
                     } else {
                         // אם אין דף ספציפי, אפשר להפנות לדף ברירת מחדל
-                        window.location.href = 'default-dashboard.html';
+                        window.location.href = 'default-dashboard.html'; 
                     }
 
                 } else {
@@ -82,11 +211,11 @@
                     loginResponseMessage.className = 'message error';
                 }
             } catch (error) {
-                console.error('Login Error:', error);
+                console.error('Login Error (frontend catch):', error);
                 loginResponseMessage.textContent = 'אירעה שגיאה בחיבור. אנא נסה שוב.';
                 loginResponseMessage.className = 'message error';
             }
         });
-    </script>
+</script>
 </body>
 </html>
